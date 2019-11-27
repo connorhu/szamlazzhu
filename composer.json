@@ -1,0 +1,19 @@
+{
+    "name": "connorhu/szamlazzhu",
+    "description": "Official source code in an unofficial repository",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Szamlazz.hu",
+            "homepage": "https://szamlazz.hu"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "SzamlaAgent\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^7.2"
+    }
+}
