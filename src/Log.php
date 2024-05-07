@@ -15,6 +15,11 @@ class Log {
     const LOG_FILENAME = 'szamlaagent';
 
     /**
+     * Naplók útvonala
+     */
+    const LOG_PATH = './logs';
+
+    /**
      * Naplózási szint: nincs naplózás
      */
     const LOG_LEVEL_OFF   = 0;
@@ -35,11 +40,6 @@ class Log {
     const LOG_LEVEL_DEBUG = 3;
 
     /**
-     * Naplók útvonala
-     */
-    const LOG_PATH = './logs';
-
-    /**
      * Elérhető naplózási szintek
      */
     private static $logLevels = array(
@@ -50,28 +50,96 @@ class Log {
     );
 
     /**
+     * Naplózási fájl elnevezés
+     *
+     * @var string
+     */
+    private $logFileName = self::LOG_FILENAME;
+
+    /**
+     * Naplózási útvonal
+     *
+     * @var string
+     */
+    private $logPath = self::LOG_PATH;
+
+    /**
+     * @var Log
+     */
+    protected static $instance;
+
+
+    /**
+     * Log constructor.
+     *
+     * @param string $logPath
+     * @param string $fileName
+     */
+    protected function __construct($logPath = self::LOG_PATH, $fileName = self::LOG_FILENAME) {
+        $this->logPath = $logPath;
+        $this->logFileName = $fileName . '_' . date('Y-m-d') . '.log';
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogFileName() {
+        return $this->logFileName;
+    }
+
+    /**
+     * @param $fileName
+     */
+    public function setLogFileName($fileName) {
+        $this->logFileName = $fileName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogPath() {
+        return $this->logPath;
+    }
+
+    /**
+     * @param string $logPath
+     */
+    public function setLogPath($logPath) {
+        $this->logPath = $logPath;
+    }
+
+    /**
+     * @return Log
+     */
+    public static function get() {
+        $instance = self::$instance;
+        if ($instance === null) {
+            return self::$instance = new self();
+        } else {
+            return $instance;
+        }
+    }
+
+    /**
      * Üzenetek naplózása logfájlba
      * Igény szerint e-mail küldése a megadott címre.
      *
      * @param string $pMessage
      * @param int    $pType
      * @param string $pEmail
-     *
-     * @throws SzamlaAgentException
      */
     public static function writeLog($pMessage, $pType = self::LOG_LEVEL_DEBUG, $pEmail = '') {
-
-        $filename   = SzamlaAgentUtil::getAbsPath(self::LOG_PATH, self::getLogFileName());
+        $log = Log::get();
+        $filename   = SzamlaAgentUtil::getAbsPath($log->getLogPath(), $log->getLogFileName());
         $remoteAddr = (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : '';
-        $message    = '['.date('Y-m-d H:i:s').'] ['.$remoteAddr.'] ['.self::getLogTypeStr($pType).'] '.$pMessage.PHP_EOL;
+        $logType = SzamlaAgentUtil::isNotBlank($log->getLogTypeStr($pType)) ? ' ['.$log->getLogTypeStr($pType).'] ' : '';
+        $message    = '['.date('Y-m-d H:i:s').'] ['.$remoteAddr.']'. $logType . $pMessage.PHP_EOL;
 
         error_log($message, 3, $filename);
 
         if (!empty($pEmail) && $pType == self::LOG_LEVEL_ERROR) {
             $headers = "Content-Type: text/html; charset=UTF-8";
             error_log($message, 1, $pEmail, $headers);
-        } elseif ($pType == self::LOG_LEVEL_ERROR) {
-            throw new SzamlaAgentException($pMessage);
         }
     }
 
@@ -79,28 +147,16 @@ class Log {
      * Visszaadja a naplózás típusának elnevezését
      *
      * @param $type
-     *
      * @return string
-     * @throws SzamlaAgentException
      */
-    private static function getLogTypeStr($type) {
+    protected function getLogTypeStr($type) {
         switch ($type) {
             case self::LOG_LEVEL_ERROR: $name = 'error'; break;
             case self::LOG_LEVEL_WARN:  $name = 'warn';  break;
             case self::LOG_LEVEL_DEBUG: $name = 'debug'; break;
-            default:
-                throw new SzamlaAgentException("Nem létezik ilyen naplózási típus: {$type}.");
+            default:                    $name = '';      break;
         }
         return $name;
-    }
-
-    /**
-     * Visszaadja a naplózási fájl nevét
-     *
-     * @return string
-     */
-    private static function getLogFileName() {
-        return self::LOG_FILENAME . '_' . date('Y-m-d') . '.log';
     }
 
     /**

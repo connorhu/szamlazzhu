@@ -10,7 +10,7 @@ namespace SzamlaAgent;
 class BuyerLedger {
 
     /**
-     * Vevő azonosító
+     * vevő gazdasági esemény azonosító
      *
      * @var string
      */
@@ -54,7 +54,7 @@ class BuyerLedger {
     /**
      * Vevő főkönyvi adatok példányosítása
      *
-     * @param string    $buyerId              vevő azonosító
+     * @param string    $buyerId              vevő gazdasági esemény azonosító
      * @param string    $bookingDate          könyvelés dátum
      * @param string    $buyerLedgerNumber    vevő főkönyvi szám
      * @param boolean   $continuedFulfillment folyamatos teljesítés
@@ -126,7 +126,7 @@ class BuyerLedger {
     }
 
     /**
-     * Visszaadja az egyedi azonosítót
+     * Visszaadja a vevő gazdasági esemény azonosítót
      *
      * @return string
      */
@@ -135,7 +135,7 @@ class BuyerLedger {
     }
 
     /**
-     * Beállítja az egyedi azonosítót
+     * Beállítja a vevő gazdasági esemény azonosítót
      *
      * @param string $buyerId
      */
