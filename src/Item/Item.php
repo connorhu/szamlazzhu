@@ -53,6 +53,71 @@ class Item {
     const VAT_AKK = 'ÁKK';
 
     /**
+     * Áfakulcs: áfakörön kívüli
+     */
+    const VAT_TAHK = 'TAHK';
+
+    /**
+     * Áfakulcs: áfakörön kívüli
+     */
+    const VAT_TEHK = 'TEHK';
+
+    /**
+     * Áfakulcs: EU-n belüli termék értékesítés
+     */
+    const VAT_EUT = 'EUT';
+
+    /**
+     * Áfakulcs: EU-n kívüli termék értékesítés
+     */
+    const VAT_EUKT = 'EUKT';
+
+    /**
+     * Áfakulcs: EU-n belüli
+     */
+    const VAT_KBAET = 'KBAET';
+
+    /**
+     * Áfakulcs: EU-n belüli
+     */
+    const VAT_KBAUK = 'KBAUK';
+
+    /**
+     * Áfakulcs: EU-n kívüli
+     */
+    const VAT_EAM = 'EAM';
+
+    /**
+     * Áfakulcs: Mentes az adó alól
+     */
+    const VAT_NAM = 'KBAUK';
+
+    /**
+     * Áfakulcs: áfa tárgyi hatályán kívül
+     */
+    const VAT_ATK = 'ATK';
+
+    /**
+     * Áfakulcs: EU-n belüli
+     */
+    const VAT_EUFAD37 = 'EUFAD37';
+
+    /**
+     * Áfakulcs: EU-n belüli
+     */
+    const VAT_EUFADE = 'EUFADE';
+
+    /**
+     * Áfakulcs: EU-n belüli
+     */
+    const VAT_EUE = 'EUE';
+
+    /**
+     * Áfakulcs: EU-n kívüli
+     */
+    const VAT_HO = 'HO';
+
+    /**
      * Alapértelmezett ÁFA érték
      */
     const DEFAULT_VAT = '27';

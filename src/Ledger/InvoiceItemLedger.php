@@ -49,7 +49,7 @@ class InvoiceItemLedger extends ItemLedger {
      * @param string  $vatLedgerNumber       ÁFA főkönyvi szám
      */
     function __construct($economicEventType = '', $vatEconomicEventType = '', $revenueLedgerNumber = '', $vatLedgerNumber = '') {
-        parent::__construct($revenueLedgerNumber, $vatLedgerNumber);
+        parent::__construct((string)$revenueLedgerNumber, (string)$vatLedgerNumber);
         $this->setEconomicEventType($economicEventType);
         $this->setVatEconomicEventType($vatEconomicEventType);
     }

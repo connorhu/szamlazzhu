@@ -45,13 +45,6 @@ class SzamlaAgentSetting {
     private $apiKey;
 
     /**
-     * E-számla esetén a kulcstartót nyitó jelszó
-     *
-     * @var string
-     */
-    private $keychain = '';
-
-    /**
      * Szeretnénk-e PDF formátumban is megkapni a bizonylatot?
      *
      * @var bool
@@ -86,6 +79,29 @@ class SzamlaAgentSetting {
      * @var string
      */
     private $aggregator;
+
+    /**
+     * @var bool
+     */
+    private $guardian;
+
+    /**
+     * @var bool
+     */
+    private $invoiceItemIdentifier;
+
+    /**
+     * A számlát a külső rendszer (Számla Agentet használó rendszer) ezzel az adattal azonosítja. Az adatot trimmelve tároljuk.
+     * (a számla adatai később ezzel az adattal is lekérdezhetők lesznek)
+     *
+     * @var string
+     */
+    private $invoiceExternalId;
+
+    /**
+     * @var string
+     */
+    private $taxNumber;
 
 
     /**
@@ -164,24 +180,6 @@ class SzamlaAgentSetting {
      */
     public function setApiKey($apiKey) {
         $this->apiKey = $apiKey;
-    }
-
-    /**
-     * Visszaadja a kulcstartót nyitó jelszó
-     *
-     * @return string
-     */
-    public function getKeychain() {
-        return $this->keychain;
-    }
-
-    /**
-     * Beállítja a kulcstartót nyitó jelszó
-     *
-     * @param string $keychain
-     */
-    public function setKeychain($keychain) {
-        $this->keychain = $keychain;
     }
 
     /**
@@ -266,6 +264,67 @@ class SzamlaAgentSetting {
     }
 
     /**
+     * @return bool
+     */
+    public function getGuardian() {
+        return $this->guardian;
+    }
+
+    /**
+     * @param bool $guardian
+     */
+    public function setGuardian($guardian) {
+        $this->guardian = $guardian;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isInvoiceItemIdentifier() {
+        return $this->invoiceItemIdentifier;
+    }
+
+    /**
+     * @param bool $invoiceItemIdentifier
+     */
+    public function setInvoiceItemIdentifier($invoiceItemIdentifier) {
+        $this->invoiceItemIdentifier = $invoiceItemIdentifier;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInvoiceExternalId() {
+        return $this->invoiceExternalId;
+    }
+
+    /**
+     * Beállítja a külső számlaazonosítót
+     *
+     * A számlát a külső rendszer (Számla Agentet használó rendszer) ezzel az adattal azonosítja. Az adatot trimmelve tároljuk.
+     * (a számla adatai később ezzel az adattal is lekérdezhetők lesznek)
+     *
+     * @param string $invoiceExternalId
+     */
+    public function setInvoiceExternalId($invoiceExternalId) {
+        $this->invoiceExternalId = $invoiceExternalId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTaxNumber() {
+        return $this->taxNumber;
+    }
+
+    /**
+     * @param string $taxNumber
+     */
+    public function setTaxNumber($taxNumber) {
+        $this->taxNumber = $taxNumber;
+    }
+
+    /**
      * Összeállítja a Számla Agent beállítás XML adatait
      *
      * @param SzamlaAgentRequest $request
@@ -278,22 +337,22 @@ class SzamlaAgentSetting {
 
         switch ($request->getXmlName()) {
             case $request::XML_SCHEMA_CREATE_INVOICE:
-                $data = $this->buildFieldsData($request, array_merge($settings, ['eszamla', 'kulcstartojelszo', 'szamlaLetoltes', 'szamlaLetoltesPld', 'valaszVerzio', 'aggregator']));
+                $data = $this->buildFieldsData($request, array_merge($settings, ['eszamla', 'szamlaLetoltes', 'szamlaLetoltesPld', 'valaszVerzio', 'aggregator', 'guardian', 'cikkazoninvoice', 'szamlaKulsoAzon']));
                 break;
             case $request::XML_SCHEMA_DELETE_PROFORMA:
                 $data = $this->buildFieldsData($request, $settings);
                 break;
             case $request::XML_SCHEMA_CREATE_REVERSE_INVOICE:
-                $data = $this->buildFieldsData($request, array_merge($settings, ['eszamla', 'kulcstartojelszo', 'szamlaLetoltes', 'szamlaLetoltesPld', 'aggregator', 'valaszVerzio']));
+                $data = $this->buildFieldsData($request, array_merge($settings, ['eszamla', 'szamlaLetoltes', 'szamlaLetoltesPld', 'aggregator', 'guardian', 'valaszVerzio', 'szamlaKulsoAzon']));
                 break;
             case $request::XML_SCHEMA_PAY_INVOICE:
-                $data = $this->buildFieldsData($request, array_merge($settings, ['szamlaszam', 'additiv', 'aggregator', 'valaszVerzio']));
+                $data = $this->buildFieldsData($request, array_merge($settings, ['szamlaszam', 'adoszam', 'additiv', 'aggregator', 'valaszVerzio']));
                 break;
             case $request::XML_SCHEMA_REQUEST_INVOICE_XML:
                 $data = $this->buildFieldsData($request, array_merge($settings, ['szamlaszam', 'rendelesSzam', 'pdf']));
                 break;
             case $request::XML_SCHEMA_REQUEST_INVOICE_PDF:
-                $data = $this->buildFieldsData($request, array_merge($settings, ['szamlaszam', 'rendelesSzam', 'valaszVerzio']));
+                $data = $this->buildFieldsData($request, array_merge($settings, ['szamlaszam', 'rendelesSzam', 'valaszVerzio', 'szamlaKulsoAzon']));
                 break;
             case $request::XML_SCHEMA_CREATE_RECEIPT:
             case $request::XML_SCHEMA_CREATE_REVERSE_RECEIPT:
@@ -327,17 +386,20 @@ class SzamlaAgentSetting {
                 case 'felhasznalo':       $value = $this->getUsername(); break;
                 case 'jelszo':            $value = $this->getPassword(); break;
                 case 'szamlaagentkulcs':  $value = $this->getApiKey();   break;
-                case 'kulcstartojelszo':  $value = $this->getKeychain(); break;
                 case 'szamlaLetoltes':
                 case 'pdf':
                 case 'pdfLetoltes':       $value = $this->isDownloadPdf(); break;
                 case 'szamlaLetoltesPld': $value = $this->getDownloadCopiesCount(); break;
                 case 'valaszVerzio':      $value = $this->getResponseType(); break;
                 case 'aggregator':        $value = $this->getAggregator(); break;
+                case 'guardian':          $value = $this->getGuardian(); break;
+                case 'cikkazoninvoice':   $value = $this->isInvoiceItemIdentifier(); break;
+                case 'szamlaKulsoAzon':   $value = $this->getInvoiceExternalId(); break;
                 case 'eszamla':           $value = $request->getEntity()->getHeader()->isEInvoice(); break;
                 case 'additiv':           $value = $request->getEntity()->isAdditive(); break;
                 case 'szamlaszam':        $value = $request->getEntity()->getHeader()->getInvoiceNumber(); break;
                 case 'rendelesSzam':      $value = $request->getEntity()->getHeader()->getOrderNumber(); break;
+                case 'adoszam':           $value = $this->getTaxNumber(); break;
                 default:
                     throw new SzamlaAgentException(SzamlaAgentException::XML_KEY_NOT_EXISTS . ": {$key}");
             }

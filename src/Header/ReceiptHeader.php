@@ -340,6 +340,12 @@ class ReceiptHeader extends DocumentHeader {
     }
 
     /**
+     * Nyugta sorszám beállítása
+     *
+     * A nyugta létrehozásánál ne használd, mert a kiállított nyugták számait a Számlázz.hu
+     * a jogszabálynak megfelelően automatikusan osztja ki: 1-től indulva, kihagyásmentesen.
+     * @see https://tudastar.szamlazz.hu/gyik/szamlaszam-formatumok-mikor-kell-megadni
+     *
      * @param string $receiptNumber
      */
     public function setReceiptNumber($receiptNumber) {

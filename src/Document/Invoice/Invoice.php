@@ -21,25 +21,20 @@ use SzamlaAgent\SzamlaAgentUtil;
  */
 class Invoice extends Document {
 
-    /**
-     * Számla típus: papír számla
-     */
+    /** Számla típus: papír számla */
     const INVOICE_TYPE_P_INVOICE = 1;
 
-    /**
-     * Számla típus: e-számla
-     */
+    /** Számla típus: e-számla */
     const INVOICE_TYPE_E_INVOICE = 2;
 
-    /**
-     * Számla lekérdezése számlaszám alapján
-     */
+    /** Számla lekérdezése számlaszám alapján */
     const FROM_INVOICE_NUMBER = 1;
 
-    /**
-     * Számla lekérdezése rendelési szám alapján
-     */
+    /** Számla lekérdezése rendelési szám alapján */
     const FROM_ORDER_NUMBER = 2;
+
+    /** Számla lekérdezése külső számlaazonosító alapján */
+    const FROM_INVOICE_EXTERNAL_ID = 3;
 
     /**
      * Jóváírások maximális száma
@@ -47,10 +42,23 @@ class Invoice extends Document {
      */
     const CREDIT_NOTES_LIMIT = 5;
 
-    /**
-     * Számlához csatolandó fájlok maximális száma
-     */
+    /** Számlához csatolandó fájlok maximális száma */
     const INVOICE_ATTACHMENTS_LIMIT = 5;
+
+    /** Számlázz.hu ajánlott számlakép */
+    const INVOICE_TEMPLATE_DEFAULT = 'SzlaMost';
+
+    /** Tradicionális számlakép */
+    const INVOICE_TEMPLATE_TRADITIONAL = 'SzlaNoEnv';
+
+    /** Borítékbarát számlakép */
+    const INVOICE_TEMPLATE_ENV_FRIENDLY = 'SzlaAlap';
+
+    /** Hőnyomtatós számlakép (8 cm széles) */
+    const INVOICE_TEMPLATE_8CM = 'Szla8cm';
+
+    /** Retró kéziszámla számlakép */
+    const INVOICE_TEMPLATE_RETRO = 'SzlaTomb';
 
 
     /**
